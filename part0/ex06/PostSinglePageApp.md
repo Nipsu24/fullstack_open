@@ -4,20 +4,12 @@ sequenceDiagram
     participant server
 
     Note left of browser: User writes into text field and clicks on save button
-    browser->>server: POST https://studies.cs.helsinki.f/exampleapp/new_note
-    server->>server: saves new note internally
-    server-->>browser: 302 status code (URL redirect)
+    browser->>browser: registers event handler which adds new note to local state (browser memory)
+    browser->>browser: renders upated DOM (new note shown immediately)
 
-    browser->>server: GET /exampleapp/notes
-    server-->>browser: HTML document
+    browser->>server: POST /exampleapp/new_note_spa
+    Note right of server: request contains new note as JSON data
 
-    browser->>server: GET /main.css
-    server-->>browser: CSS file
-
-    browser->>server: GET /main.js
-    server-->>browser: JavaScript file
-
-    browser->>server: GET /data.json
-    server-->>browser: JSON file
-    Note right of server: containing new note
+    server->>server: parses and saves new note internally
+    server-->>browser: 201 (Created)
 ```
