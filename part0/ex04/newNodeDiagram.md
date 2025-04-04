@@ -3,6 +3,7 @@ sequenceDiagram
     participant browser
     participant server
 
+    Note left of browser: User writes into text field and clicks on save button
     browser->>server: POST https://studies.cs.helsinki.f/exampleapp/new_note
     server->>server: saves new note internally
     server-->>browser: 302 status code (URL redirect)
