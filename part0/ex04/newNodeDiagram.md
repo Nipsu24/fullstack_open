@@ -18,6 +18,5 @@ sequenceDiagram
     server-->>browser: JavaScript file
 
     browser->>server: GET /data.json
-    server-->>browser: JSON file
-    Note right of server: containing new note
+    server-->>browser: JSON file (containing new note data)
 ```
