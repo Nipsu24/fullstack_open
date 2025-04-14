@@ -13,9 +13,14 @@ const Button = ({onClick, text}) => (
 )
 
 const StatisticLine = (props) => (
-	<div>
-		{props.text} {props.value} {props.suffix || ''}
-	</div>
+	<tr>
+		<td>
+			{props.text} 
+		</td>
+		<td>
+			{props.value} {props.suffix || ''}
+		</td>
+	</tr>
 )
 
 const Statistics = ({ good, neutral, bad }) => {
@@ -31,14 +36,16 @@ const Statistics = ({ good, neutral, bad }) => {
 	const average = ((good * 1) + (neutral * 0) + (bad * -1)) / total;
 	const positive = (good / total) * 100;
 	return (
-		<div>
-			<StatisticLine text='good' value={good} />
+		<table>
+			<tbody>
+			<StatisticLine text='good' value={good}/>
 			<StatisticLine text='neutral' value={neutral} />
 			<StatisticLine text='bad' value={bad} />
 			<StatisticLine text='all' value={total} />
 			<StatisticLine text='average' value={average} />
 			<StatisticLine text='positie' value={positive} suffix='%' />
-		</div>
+			</tbody>
+		</table>
 	)
 }
 
@@ -71,14 +78,14 @@ const App = () => {
 	}
 
 	return (
-		<>
+		<div>
 			<Header title={title} />
 			<Button onClick={increaseGood} text="good" />
 			<Button onClick={increaseNeutral} text="neutal" />
 			<Button onClick={increaseBad} text="bad" />
 			<Header title={title2} />
 			<Statistics good={good} neutral={neutral} bad={bad} />
-		</>
+		</div>
 	)
 }
 
