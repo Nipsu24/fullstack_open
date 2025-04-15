@@ -6,6 +6,16 @@ const Button = ({onClick, text}) => (
 	</button> 
 )
 
+const MostVoted = ({anecdotes, votes}) => {
+	const hightestValueIndex = votes.indexOf(Math.max(...votes));
+	console.log(hightestValueIndex);
+	return (
+		<p>
+			{anecdotes[hightestValueIndex]}
+		</p>
+	)
+}
+
 const getRandomInt = (max) => Math.floor(Math.random() * max)
 
   const App = () => {
@@ -39,11 +49,14 @@ const getRandomInt = (max) => Math.floor(Math.random() * max)
 
 	return (
 		<div>
+			<h1>Anecdote of the day</h1>
 			<p>
 				{anecdotes[selected]}
 			</p>
 			<Button onClick={setVote} text="vote" />
 			<Button onClick={generateAnecdote} text="next anecdote" />
+			<h1>Anecdote with most votes</h1>
+			<MostVoted anecdotes={anecdotes} votes={votes} />
 		</div>
 	)
 }
