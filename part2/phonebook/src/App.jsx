@@ -6,12 +6,18 @@ const Persons = ({ person }) => {
 
 const App = () => {
 	const [persons, setPersons] = useState([
-		{ name: 'Arto Hellas' }
+		{ name: 'test' }
 	]) 
 	const [newName, setNewName] = useState('')
 
 	const addName = (event) => {
 		event.preventDefault()
+		for (let i = 0; i < persons.length; i++) {
+			if (newName === persons[i].name) {
+				window.alert(`${newName} is already added to the phonebook`)
+				return ;
+			}
+		}
 		const newPersonObject = {
 			name: newName,
 			important: true,
