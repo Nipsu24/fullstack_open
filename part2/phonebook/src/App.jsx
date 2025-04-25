@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import personService from './services/persons'
 
 const Persons = ({ person }) => {
 	return <div>{person.name} {person.number}</div>
@@ -37,20 +38,19 @@ const PersonForm = (props) => {
 	)
 }
 
+
 const App = () => {
 	const [persons, setPersons] = useState([])
 	const [newName, setNewName] = useState('')
 	const [newNumber, setNewNumber] = useState('')
 	const [filter, setFilter] = useState('')
-
+	
 	useEffect(() => {
-		console.log('effect')
-		axios
-			.get('http://localhost:3001/persons')
-			.then(response => {
-			console.log('promise fulfilled')
-			setPersons(response.data)
-			})
+		personService
+		.getAll()
+		.then(initialPersons => {
+		setPersons(initialPersons)
+		})
 	}, [])
 
 	const addName = (event) => {
@@ -67,9 +67,13 @@ const App = () => {
 			id: String(persons.length + 1),
 			number: newNumber,
 		}
-		setPersons(persons.concat(newPersonObject))
-		setNewName('')
-		setNewNumber('')
+		personService
+		.create(newPersonObject)
+		.then(returnedPerson => {
+			setPersons(persons.concat(returnedPerson))
+			setNewName('')
+			setNewNumber('')
+		})
 	}
 
 	const handleFilterChange = (event) => {
