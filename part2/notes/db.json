@@ -16,24 +16,14 @@
       "important": true
     },
     {
-      "id": "fc93",
-      "content": "another Note",
-      "important": true
-    },
-    {
-      "id": "6fdd",
-      "content": "and another note",
-      "important": true
-    },
-    {
-      "id": "5584",
-      "content": "this is another note",
-      "important": true
-    },
-    {
-      "id": "f81a",
-      "content": "another note",
+      "id": "8488",
+      "content": "test",
       "important": false
+    },
+    {
+      "id": "dfdc",
+      "content": "another test",
+      "important": true
     }
   ]
 }
