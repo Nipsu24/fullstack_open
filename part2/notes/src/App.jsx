@@ -21,14 +21,13 @@ const Footer = () => {
 
 
 const App = () => {
-  const [notes, setNotes] = useState([])
+  const [notes, setNotes] = useState(null)
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
 
   //empty [] means, that effect only runs along with first render of component
   //useEffect used to fetch data from json server
-
 useEffect(() => {
 	noteService
 	.getAll()
@@ -36,6 +35,10 @@ useEffect(() => {
 	setNotes(initialNotes)
 	})
 }, [])
+
+if (!notes) {
+	return null
+}
 
 	const toggleImportanceOf = id => {
 		const note = notes.find(n => n.id === id)
