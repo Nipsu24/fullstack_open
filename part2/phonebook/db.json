@@ -22,9 +22,9 @@
     },
     {
       "id": "5",
-      "name": "Arto Hellos",
+      "name": "newUser",
       "important": true,
-      "number": "456"
+      "number": "345"
     }
   ]
 }

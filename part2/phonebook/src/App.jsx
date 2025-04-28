@@ -134,7 +134,7 @@ const App = () => {
 		setNewNumber(event.target.value)
 	}
 
-	const ShownPersons = ({filteredPersons, newNumber, deletePerson, updateNumber}) => {
+	const ShownPersons = ({filteredPersons, deletePerson}) => {
 		return (
 			<div>
 				{filteredPersons.map(person => (
@@ -162,7 +162,6 @@ const App = () => {
 			<h2>Numbers</h2>
 			<ShownPersons 
 				filteredPersons={filteredPersons}
-				newNumber={newNumber} 
 				deletePerson={deletePerson} 
 			/>
 		</div>
