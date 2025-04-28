@@ -25,6 +25,18 @@
       "name": "newUser",
       "important": true,
       "number": "345"
+    },
+    {
+      "id": "6",
+      "name": "Juhhuu",
+      "important": true,
+      "number": "123"
+    },
+    {
+      "id": "7",
+      "name": "anewname",
+      "important": true,
+      "number": "123"
     }
   ]
 }
