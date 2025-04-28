@@ -88,6 +88,9 @@ const App = () => {
 		.then(returnedPerson => {
 			setPersons(persons.concat(returnedPerson))
 			setSuccessMessage(`Added ${newName}.`)
+			setTimeout(() => {
+				setSuccessMessage(null)
+			  }, 5000)
 			setNewName('')
 			setNewNumber('')
 		})
