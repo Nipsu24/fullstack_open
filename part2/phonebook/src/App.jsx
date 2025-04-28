@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
 import Notification from './components/Notification'
+import ErrMsg from './components/ErrorMsg'
 
 const Persons = ({ person, deletePerson }) => {
 	return (
@@ -52,6 +53,7 @@ const App = () => {
 	const [newNumber, setNewNumber] = useState('')
 	const [filter, setFilter] = useState('')
 	const [successMessage, setSuccessMessage] = useState(null)
+	const [ErrorMessage, setErrorMessage] = useState(null)
 	
 	useEffect(() => {
 		personService
@@ -70,10 +72,6 @@ const App = () => {
 			}
 			else if (newName === persons[i].name && newNumber != persons[i].number) {
 				updateNumber(newNumber, persons[i].id)
-				setSuccessMessage(`${newName}'s phone number updated.`)
-				setTimeout(() => {
-					setSuccessMessage(null)
-				  }, 5000)
 				return ;
 			}
 		}
@@ -90,40 +88,43 @@ const App = () => {
 			setSuccessMessage(`Added ${newName}.`)
 			setTimeout(() => {
 				setSuccessMessage(null)
-			  }, 5000)
+			}, 5000)
 			setNewName('')
 			setNewNumber('')
 		})
 	}
-
+	
 	const handleFilterChange = (event) => {
 		setFilter(event.target.value)
 	}
-
+	
 	const filteredPersons = persons.filter(person =>
 		person.name.toLowerCase().includes(filter.toLowerCase())
 	)
-
+	
 	const handleNameChange = (event) => {
 		console.log(event.target.value)
 		setNewName(event.target.value)
 	}
-
+	
 	const deletePerson = (id) => {
 		const person = persons.find(p => p.id === id)
 		if (window.confirm(`Delete ${person.name}?`)) {
 			personService
-				.remove(id)
-				.then(() => {
-					setPersons(persons.filter(p => p.id != id))
-				})
-				.catch(error => {
-					alert(`The person '${person.name}' was already deleted from the server`)
-					setPersons(persons.filter(p => p.id !== id))
-				})
+			.remove(id)
+			.then(() => {
+				setPersons(persons.filter(p => p.id != id))
+			})
+			.catch(error => {
+				setErrorMessage(`${person.name} was already deleted from the server`)
+				setTimeout(() => {
+					setErrorMessage(null)
+				}, 5000)
+				setPersons(persons.filter(p => p.id !== id))
+			})
 		}
 	}
-
+	
 	//called in addName if name exists but number deviates
 	const updateNumber = (newNumber, id) => {
 		const person = persons.find(p => p.id === id)
@@ -135,6 +136,17 @@ const App = () => {
 				setPersons(persons.map(p => (p.id === id ? updatedPersonObject : p)));
 				setNewName('')
 				setNewNumber('')
+				setSuccessMessage(`${newName}'s phone number updated.`)
+				setTimeout(() => {
+					setSuccessMessage(null)
+				}, 5000)
+			})
+			.catch(error => {
+				setErrorMessage(`${person.name} was already deleted from the server`)
+				setTimeout(() => {
+					setErrorMessage(null)
+				}, 5000)
+				setPersons(persons.filter(p => p.id !== id))
 			})
 		}
 	}
@@ -162,6 +174,7 @@ const App = () => {
 		<div>
 			<h2>Phonebook</h2>
 			<Notification message={successMessage} />
+			<ErrMsg message={ErrorMessage} />
 			<Filter value={filter} onChange={handleFilterChange} />
 			<h2>add a new</h2>
 			<PersonForm 
