@@ -1,6 +1,32 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const WeatherDetails = ({country}) => {
+	const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+	const [weatherData, setWeatherData] = useState(null)
+		useEffect(() => {
+			const [lat, lon] = country.latlng;
+			axios
+				.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
+				.then(response => {
+					setWeatherData(response.data)
+			})
+		}, [country])
+	
+	if (!weatherData) {
+		return <div>Loading weather data...</div>;
+	}
+	const { icon, description } = weatherData.weather[0];
+	const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`
+	return (
+		<>
+			<div>Temperature: {weatherData.main.temp}°C</div>
+			<img src={iconUrl} alt={description} />
+			<div>Wind: {weatherData.wind.speed} m/s</div>
+		</>
+	)
+}
+
 const CountryDetails = ({ country }) => (
 	<div key={country.name.common}>
 		<h1>{country.name.common}</h1>
@@ -13,6 +39,8 @@ const CountryDetails = ({ country }) => (
 			))}
 		</ul>
 		<img src={country.flags.png} alt={`Flag of ${country.name.common}. ${country.flags.alt}`} />
+		<h1>Weather in {country.name.common}</h1>
+		<WeatherDetails country={country} />
 	</div>
 )
 
