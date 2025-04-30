@@ -1,3 +1,8 @@
+# Run website
+API key from openweathermap.org needed in order to launch the website. After aquiring key run following command:
+```
+export VITE_WEATHER_API_KEY=INSERT_YOUR_KEY && npm run dev
+```
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
