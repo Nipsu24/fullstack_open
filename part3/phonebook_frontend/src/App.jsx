@@ -66,12 +66,16 @@ const App = () => {
 	const addName = (event) => {
 		event.preventDefault()
 		for (let i = 0; i < persons.length; i++) {
-			if (newName === persons[i].name && newNumber === persons[i].number) {
-				window.alert(`${newName} is already added to the phonebook`)
-				return ;
-			}
-			else if (newName === persons[i].name && newNumber != persons[i].number) {
-				updateNumber(newNumber, persons[i].id)
+			if (newName === persons[i].name) {
+				const updatedPerson = { ...persons[i], number: newNumber}
+				personService
+				.update(persons[i].id, updatedPerson)
+				.then(returnedPerson => {
+					setPersons(persons.map(p => (p.id === persons[i].id ? returnedPerson : p)))
+					setSuccessMessage(`Updated ${newName}.`)
+					setNewName('');
+                    setNewNumber('');
+				})
 				return ;
 			}
 		}
