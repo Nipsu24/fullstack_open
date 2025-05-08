@@ -96,6 +96,13 @@ const App = () => {
 			setNewName('')
 			setNewNumber('')
 		})
+		.catch(error => {
+			console.log(error.response.data.error)
+			setErrorMessage(error.response.data.error)
+			setTimeout(() => {
+				setErrorMessage(null)
+			}, 5000)
+		})
 	}
 	
 	const handleFilterChange = (event) => {
@@ -149,7 +156,7 @@ const App = () => {
 				setErrorMessage(`${person.name} was already deleted from the server`)
 				setTimeout(() => {
 					setErrorMessage(null)
-				}, 5000)
+				}, 10000)
 				setPersons(persons.filter(p => p.id !== id))
 			})
 		}
