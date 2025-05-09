@@ -136,31 +136,31 @@ const App = () => {
 		}
 	}
 	
-	//called in addName if name exists but number deviates
-	const updateNumber = (newNumber, id) => {
-		const person = persons.find(p => p.id === id)
-		const updatedPersonObject = {...person, number: newNumber}
-		if (window.confirm(`${person.name} is already added to the phonebook, replace the old number with a new one?`)) {
-			personService
-			.update(id, updatedPersonObject)
-			.then(() => {
-				setPersons(persons.map(p => (p.id === id ? updatedPersonObject : p)));
-				setNewName('')
-				setNewNumber('')
-				setSuccessMessage(`${newName}'s phone number updated.`)
-				setTimeout(() => {
-					setSuccessMessage(null)
-				}, 5000)
-			})
-			.catch(error => {
-				setErrorMessage(`${person.name} was already deleted from the server`)
-				setTimeout(() => {
-					setErrorMessage(null)
-				}, 10000)
-				setPersons(persons.filter(p => p.id !== id))
-			})
-		}
-	}
+	//replaced by personService.update in addName
+	// const updateNumber = (newNumber, id) => {
+	// 	const person = persons.find(p => p.id === id)
+	// 	const updatedPersonObject = {...person, number: newNumber}
+	// 	if (window.confirm(`${person.name} is already added to the phonebook, replace the old number with a new one?`)) {
+	// 		personService
+	// 		.update(id, updatedPersonObject)
+	// 		.then(() => {
+	// 			setPersons(persons.map(p => (p.id === id ? updatedPersonObject : p)));
+	// 			setNewName('')
+	// 			setNewNumber('')
+	// 			setSuccessMessage(`${newName}'s phone number updated.`)
+	// 			setTimeout(() => {
+	// 				setSuccessMessage(null)
+	// 			}, 5000)
+	// 		})
+	// 		.catch(error => {
+	// 			setErrorMessage(`${person.name} was already deleted from the server`)
+	// 			setTimeout(() => {
+	// 				setErrorMessage(null)
+	// 			}, 10000)
+	// 			setPersons(persons.filter(p => p.id !== id))
+	// 		})
+	// 	}
+	// }
 
 	const handleNumberChange = (event) => {
 		console.log(event.target.value)
