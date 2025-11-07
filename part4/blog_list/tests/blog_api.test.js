@@ -50,6 +50,13 @@ test('a specific blog is within the returned blogs', async () => {
   assert.strictEqual(titles.includes('First Blog'), true)
 })
 
+test('unique identifier property of the blog posts is named id', async () => {
+  const response = await api.get('/api/blogs')
+  const blogs = response.body
+  const allHaveId = blogs.every(b => Object.hasOwn(b, 'id'))
+  assert.strictEqual(allHaveId, true)
+})
+
 
 after(async () => {
   await mongoose.connection.close()
