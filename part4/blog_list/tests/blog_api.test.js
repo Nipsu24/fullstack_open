@@ -12,15 +12,22 @@ const initialBlogs = [
     title: 'First Blog',
     author: 'Me me',
     url: 'fake-url.com',
-    likes: '200'
+    likes: 100
   },
   {
     title: 'Second Blog',
     author: 'You you',
     url: 'another-fake-url.com',
-    likes: '100'
+    likes: 100
   },
 ]
+
+const thirdBlog = {
+    title: 'Third Blog',
+    author: 'We we',
+    url: 'super-fake-url.com',
+    likes: 400
+}
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -57,6 +64,27 @@ test('unique identifier property of the blog posts is named id', async () => {
   assert.strictEqual(allHaveId, true)
 })
 
+test('post request increases amount of blogs by 1', async () => {
+  const startBlogs = await api.get('/api/blogs')
+  const startLength = startBlogs.body.length
+
+  await api.post('/api/blogs').send(thirdBlog)
+  const endBlogs = await api.get('/api/blogs')
+  const endLength = endBlogs.body.length
+  assert.strictEqual(endLength, startLength + 1)
+})
+
+test('post request creates further blog with correct content', async () => {
+
+  await api.post('/api/blogs').send(thirdBlog)
+  const blogs = await api.get('/api/blogs')
+  const createdBlog = blogs.body[2]
+    
+    assert.deepStrictEqual(
+      { title: createdBlog.title, author: createdBlog.author, url: createdBlog.url, likes: createdBlog.likes },
+      thirdBlog
+    )
+})
 
 after(async () => {
   await mongoose.connection.close()
