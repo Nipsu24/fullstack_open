@@ -9,6 +9,10 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -32,6 +36,7 @@ const App = () => {
        window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       ) 
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -43,11 +48,35 @@ const App = () => {
     }
   }
 
-    const handleLogout = () => {
-      window.localStorage.removeItem('loggedBlogappUser')
-      blogService.setToken(null)
-      setUser(null)
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    blogService.setToken(null)
+    setUser(null)
   }
+
+  const handleCreate = async event => {
+    event.preventDefault()
+    try {
+      const newBlog = await blogService.create({ title, author, url} )
+      setBlogs([...blogs, newBlog])
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setSuccessMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+      setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+    }
+    catch (error) {
+      console.error('Error creating blog:', error)
+      console.log("error:", error.response?.data)
+      setErrorMessage('Failed to create blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+    }, 5000)
+  }
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -89,6 +118,44 @@ const App = () => {
     </div>
   )
 
+  const createForm = () => (
+    <div>
+    <form onSubmit={handleCreate}>
+      <div>
+        <label>
+          title
+          <input
+            type="text"
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          author
+          <input
+            type="text"
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </label>
+      </div>
+      <div>
+      <label>
+        url
+        <input
+          type="text"
+          value={url}
+          onChange={({ target }) => setUrl(target.value)}
+        />
+      </label>
+    </div>
+      <button type="submit">create</button>
+    </form>
+    </div>
+  )
+
   return (
     <div>
       
@@ -98,12 +165,20 @@ const App = () => {
         </div>
       )}
 
+      {successMessage && (
+        <div style={{ color: 'green', border: '2px solid green', padding: '10px', marginBottom: '10px' }}>
+          {successMessage}
+        </div>
+      )}
+
       {!user && loginForm()}
        {user && (
       <div>
         <p>{user.name} logged in</p>
         {blogForm()}
         {logoutForm()}
+        <h2>create new</h2>
+        {createForm()}
       </div>
     )}
     </div>
