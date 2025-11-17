@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -10,17 +12,15 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
-   useEffect(() => {
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
@@ -33,9 +33,9 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
-       window.localStorage.setItem(
+      window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -54,27 +54,24 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreate = async event => {
-    event.preventDefault()
+  const addBlog = async (blogObject) => {
     try {
-      const newBlog = await blogService.create({ title, author, url} )
-      setBlogs([...blogs, newBlog])
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      blogFormRef.current.toggleVisibility()
+      const newBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(newBlog))
       setSuccessMessage(`a new blog ${newBlog.title} by ${newBlog.author} added`)
       setTimeout(() => {
-      setSuccessMessage(null)
-    }, 5000)
+        setSuccessMessage(null)
+      }, 5000)
     }
     catch (error) {
       console.error('Error creating blog:', error)
-      console.log("error:", error.response?.data)
+      console.log('error:', error.response?.data)
       setErrorMessage('Failed to create blog')
       setTimeout(() => {
         setErrorMessage(null)
-    }, 5000)
-  }
+      }, 5000)
+    }
   }
 
   const loginForm = () => (
@@ -103,62 +100,23 @@ const App = () => {
     </form>
   )
 
-  const blogForm = () => (
+  const postedBlogs = () => (
     <div>
-        <h2>blogs</h2>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
-      </div>
+      <h2>blogs</h2>
+      {blogs.map(blog =>
+        <Blog key={blog.id} blog={blog} />
+      )}
+    </div>
   )
 
-  const logoutForm = () => (
+  const logout = () => (
     <div>
       <button onClick={handleLogout} type="submit">logout</button>
     </div>
   )
 
-  const createForm = () => (
-    <div>
-    <form onSubmit={handleCreate}>
-      <div>
-        <label>
-          title
-          <input
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          author
-          <input
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-      <label>
-        url
-        <input
-          type="text"
-          value={url}
-          onChange={({ target }) => setUrl(target.value)}
-        />
-      </label>
-    </div>
-      <button type="submit">create</button>
-    </form>
-    </div>
-  )
-
   return (
     <div>
-      
       {errorMessage && (
         <div style={{ color: 'red', border: '2px solid red', padding: '10px', marginBottom: '10px' }}>
           {errorMessage}
@@ -172,15 +130,16 @@ const App = () => {
       )}
 
       {!user && loginForm()}
-       {user && (
-      <div>
-        <p>{user.name} logged in</p>
-        {blogForm()}
-        {logoutForm()}
-        <h2>create new</h2>
-        {createForm()}
-      </div>
-    )}
+      {user && (
+        <div>
+          <p>{user.name} logged in</p>
+          {postedBlogs()}
+          {logout()}
+          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+            <BlogForm createBlog={addBlog} ></BlogForm>
+          </Togglable>
+        </div>
+      )}
     </div>
   )
 }
