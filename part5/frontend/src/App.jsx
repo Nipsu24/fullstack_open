@@ -76,18 +76,32 @@ const App = () => {
 
   const updateBlogLikes = async (blogObject) => {
     try {
-    blogObject.likes = blogObject.likes + 1
+      blogObject.likes = blogObject.likes + 1
       const updatedBlog = await blogService.update(blogObject)
       setBlogs(blogs.map(b => b.id === updatedBlog.id ? updatedBlog : b))
     }
     catch (error) {
-        setErrorMessage('Failed to like blog')
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
+      setErrorMessage('Failed to like blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
     }
   }
 
+  const deleteBlog = async (blogObject) => {
+    if (window.confirm(`Remove blog ${blogObject.title} by ${blogObject.author}?`)) {
+      try {
+        await blogService.remove(blogObject)
+        setBlogs(blogs.filter( b => b.id !== blogObject.id ))
+      }
+      catch (error) {
+        setErrorMessage('Failed to delete blog')
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      }
+    }
+  }
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -114,14 +128,18 @@ const App = () => {
     </form>
   )
 
-  const postedBlogs = () => (
-    <div>
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleBlogUpdate={updateBlogLikes} />
-      )}
-    </div>
-  )
+
+  const postedBlogs = () => {
+    const blogsSorted = blogs.sort((a, b) => b.likes - a.likes)
+    return (
+      <div>
+        <h2>blogs</h2>
+        {blogsSorted.map(blog =>
+          <Blog key={blog.id} blog={blog} user={user} handleBlogUpdate={updateBlogLikes} handleDeleteBlog={deleteBlog} />
+        )}
+      </div>
+    )
+  }
 
   const logout = () => (
     <div>
