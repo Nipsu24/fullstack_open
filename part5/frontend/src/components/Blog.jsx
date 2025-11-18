@@ -19,11 +19,11 @@ const Blog = ({ blog, handleBlogUpdate, user, handleDeleteBlog }) => {
   }
   return (
     <div style={blogStyle}>
-      <div style={showViewButtonStyle}>
+      <div style={showViewButtonStyle} className='blogSummary'>
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>view</button>
       </div>
-      <div style={showBlogDetailStyle}>
+      <div style={showBlogDetailStyle} className='blogDetail'>
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>hide</button>
         <div>{blog.url} </div>
