@@ -13,27 +13,27 @@ const app = express()
 
 //to avoid empty body undefined
 app.use((req, res, next) => {
-  req.body = req.body || {};
-  next();
-});
+  req.body = req.body || {}
+  next()
+})
 
 app.use(express.json())
 
 logger.info('connecting to', config.MONGODB_URI)
 
 mongoose
-.connect(config.MONGODB_URI)
-.then(() => {
-  logger.info('connected to MongoDB')
-})
-.catch((error) => {
-  logger.error('error connection to MongoDB:', error.message)
-})
+  .connect(config.MONGODB_URI)
+  .then(() => {
+    logger.info('connected to MongoDB')
+  })
+  .catch((error) => {
+    logger.error('error connection to MongoDB:', error.message)
+  })
 
 app.use(cors())
 app.use(express.static('dist'))
 app.use(middleware.requestLogger)
-app.use(middleware.tokenExtractor) 
+app.use(middleware.tokenExtractor)
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)

@@ -22,22 +22,22 @@ describe('Blog API tests', () => {
   ]
 
   const thirdBlog = {
-      title: 'Third Blog',
-      author: 'We we',
-      url: 'super-fake-url.com',
-      likes: 400
+    title: 'Third Blog',
+    author: 'We we',
+    url: 'super-fake-url.com',
+    likes: 400
   }
 
   const fourthBlog = {
-      title: 'Third Blog',
-      author: 'We we',
-      likes: 400
+    title: 'Third Blog',
+    author: 'We we',
+    likes: 400
   }
 
   const fifthBlog = {
-      author: 'We we',
-      url: 'super-fake-url.com',
-      likes: 400
+    author: 'We we',
+    url: 'super-fake-url.com',
+    likes: 400
   }
 
   beforeEach(async () => {
@@ -90,11 +90,11 @@ describe('Blog API tests', () => {
     await api.post('/api/blogs').send(thirdBlog)
     const blogs = await api.get('/api/blogs')
     const createdBlog = blogs.body[2]
-      
-      assert.deepStrictEqual(
-        { title: createdBlog.title, author: createdBlog.author, url: createdBlog.url, likes: createdBlog.likes },
-        thirdBlog
-      )
+
+    assert.deepStrictEqual(
+      { title: createdBlog.title, author: createdBlog.author, url: createdBlog.url, likes: createdBlog.likes },
+      thirdBlog
+    )
   })
 
   test('checks if likes field has value 0 if missing from the object', async () => {
@@ -106,13 +106,13 @@ describe('Blog API tests', () => {
   test('post response with 400 when url is missing in request', async () => {
 
     const response = await api.post('/api/blogs').send(fourthBlog)
-    assert.deepStrictEqual( response.body,{error: "Missing fields in POST request"})
-  }) 
-  
+    assert.deepStrictEqual( response.body,{ error: 'Missing fields in POST request' })
+  })
+
   test('post response with 400 when title is missing in request', async () => {
 
     const response = await api.post('/api/blogs').send(fifthBlog)
-    assert.deepStrictEqual( response.body,{error: "Missing fields in POST request"})
+    assert.deepStrictEqual( response.body,{ error: 'Missing fields in POST request' })
   })
 
   test('deletes blog from list of blogs successfully', async () => {
@@ -130,7 +130,7 @@ describe('Blog API tests', () => {
   test('returns error 404 when trying to delete not existing blog', async () => {
     const nonExistingId = '507f1f77bcf86cd799439011'
     const response = await api.delete(`/api/blogs/${nonExistingId}`).expect(404)
-    assert.deepStrictEqual(response.body, { error: "Blog could not be found" })
+    assert.deepStrictEqual(response.body, { error: 'Blog could not be found' })
 
   })
 
@@ -138,7 +138,7 @@ describe('Blog API tests', () => {
     const blogs = await api.get('/api/blogs')
     const blogToUpdate = blogs.body[0]
     const initialLikes = blogToUpdate.likes
-    
+
     const newLikes = initialLikes + 100
     const updatedBlog = await api
       .put(`/api/blogs/${blogToUpdate.id}`)

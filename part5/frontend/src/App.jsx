@@ -102,6 +102,7 @@ const App = () => {
       }
     }
   }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -127,7 +128,6 @@ const App = () => {
       <button type="submit">login</button>
     </form>
   )
-
 
   const postedBlogs = () => {
     const blogsSorted = blogs.sort((a, b) => b.likes - a.likes)
