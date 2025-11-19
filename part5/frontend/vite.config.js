@@ -16,6 +16,11 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './testSetup.js',
-    reporter: 'verbose'
+    reporter: 'verbose',
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{js,jsx}'],
+      exclude: ['src/main.jsx']
+    }
   }
 })
