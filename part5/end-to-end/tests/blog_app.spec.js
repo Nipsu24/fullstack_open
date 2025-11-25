@@ -10,6 +10,13 @@ describe('Blog app', () => {
         password: '123456'
       }
     })
+     await request.post('http://localhost:3001/api/users', {
+      data: {
+        name: 'Second User',
+        username: '2ndUser',
+        password: '123456'
+      }
+    })
     
     await page.goto('http://localhost:5173')
   })
@@ -85,6 +92,23 @@ describe('Blog app', () => {
       await page.locator('.blogDetail').getByRole('button', { name: 'delete' }).click()
       await expect(page.locator('.blogSummary').getByText('newBlog H.G. Wells')).not.toBeVisible()
     })
-  })
+
+    test('a new blog cannot be deleted by other user', async ({ page }) => {
+      await page.getByRole('button', { name: 'create new blog' }).click()
+      const textboxes = await page.getByRole('textbox').all()
+      await textboxes[0].fill('anothernewBlog')
+      await textboxes[1].fill('newAuthor')
+      await textboxes[2].fill('fake-url2')
+      await page.getByRole('button', { name: 'create' }).click()
+      await page.getByRole('button', { name: 'logout' }).click()
+
+      await page.getByRole('textbox').first().fill('2ndUser')
+      await page.getByRole('textbox').last().fill('123456')
+      await page.getByRole('button', { name: 'login' }).click()
+      await expect(page.getByText('Second User logged in')).toBeVisible()
+      await page.getByRole('button', { name: 'view' }).click()
+      await expect(page.getByText('delete')).not.toBeVisible()
+    })
+})    
   
 })
